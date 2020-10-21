@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>POST DEMO</h1>
+    <p>Click the button to get your coordinates.</p>
+
+    <button onclick="getLocation()">Try It</button>
+
+    <p id="demo"></p>
+
+
+</body>
+<script>
+    var x = document.getElementById("demo");
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+            x.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    function showPosition(position) {
+        x.innerHTML = "Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude;
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        var data = {
+            lat,
+            lon
+        }
+        var options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            } //,
+            // body: JSON.stringify(data)
+        };
+        console.log(lat, lon)
+        fetch('/api', options);
+    }
+</script>
+
+</html>
