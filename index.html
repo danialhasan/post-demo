@@ -2,51 +2,36 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
 </head>
 
 <body>
-    <h1>POST DEMO</h1>
-    <p>Click the button to get your coordinates.</p>
-
-    <button onclick="getLocation()">Try It</button>
-
-    <p id="demo"></p>
-
+    <script>
+        function myFunction() {
+            const data = {
+                fname: "thisisthefirstname",
+                lname: "thisisthelastname"
+            }
+            const options = {
+                method: 'POST',
+                withCredentials: false,
+                headers: {
+                    'content-type': 'application/json',
+                    'origin': 'http://localhost:5503',
+                },
+                body: JSON.stringify(data)
+            };
+            fetch('/api', options);
+            console.log("fetch sent")
+        }
+    </script>
+    <h1>POST demo</h1>
+    <p>Press the button to send some data.</p>
+    <button onclick="myFunction()">Click me</button>
 
 </body>
-<script>
-    var x = document.getElementById("demo");
-
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-            x.innerHTML = "Geolocation is not supported by this browser.";
-        }
-    }
-
-    function showPosition(position) {
-        x.innerHTML = "Latitude: " + position.coords.latitude +
-            "<br>Longitude: " + position.coords.longitude;
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        var data = {
-            lat,
-            lon
-        }
-        var options = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            } //,
-            // body: JSON.stringify(data)
-        };
-        console.log(lat, lon)
-        fetch('/api', options);
-    }
-</script>
 
 </html>
