@@ -9,6 +9,10 @@
 </head>
 
 <body>
+
+    <h1>POST demo</h1>
+    <p>Press the button to send some data.</p>
+    <button onclick="myFunction()">Click me</button>
     <script>
         function myFunction() {
             const data = {
@@ -20,18 +24,16 @@
                 withCredentials: false,
                 headers: {
                     'content-type': 'application/json',
-                    'origin': 'http://localhost:5503',
+                    'origin': 'http://localhost:5504',
                 },
                 body: JSON.stringify(data)
             };
-            fetch('/api', options);
+            // fetch('/api', options);
+            //fetch(‘http://localhost:PORT_OF_NODE_SERVER/api', options);
+            fetch('localhost:8000/api', options);
             console.log("fetch sent")
         }
     </script>
-    <h1>POST demo</h1>
-    <p>Press the button to send some data.</p>
-    <button onclick="myFunction()">Click me</button>
-
 </body>
 
 </html>
