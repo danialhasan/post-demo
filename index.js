@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-app.listen(5504, () => console.log("listening to port 5504"));
+app.listen(5500, () => console.log("listening to port 5500"));
 app.use(express.static('public'));
 app.use((req, res, next) => {
 
@@ -18,4 +18,5 @@ app.use((req, res, next) => {
 app.post('/api', (req, res) => {
     console.log("received request");
     console.log(req.body);
+
 });

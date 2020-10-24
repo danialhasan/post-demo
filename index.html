@@ -6,12 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
+    <style>
+        body {
+            background-color: rgb(25, 25, 25);
+            color: white
+        }
+    </style>
 </head>
 
 <body>
 
     <h1>POST demo</h1>
-    <p>Press the button to send some data.</p>
+    <p>Press THE button to send some data.</p>
     <button onclick="myFunction()">Click me</button>
     <script>
         function myFunction() {
@@ -24,13 +30,14 @@
                 withCredentials: false,
                 headers: {
                     'content-type': 'application/json',
-                    'origin': 'http://localhost:5504',
+                    'origin': 'http://localhost:8000',
                 },
                 body: JSON.stringify(data)
             };
             // fetch('/api', options);
             //fetch(‘http://localhost:PORT_OF_NODE_SERVER/api', options);
-            fetch('localhost:8000/api', options);
+            fetch('http://127.0.0.1:5500/api', options);
+
             console.log("fetch sent")
         }
     </script>
