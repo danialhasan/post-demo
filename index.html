@@ -20,7 +20,7 @@
     <p>Press THE button to send some data.</p>
     <button onclick="myFunction()">Click me</button>
     <script>
-        function myFunction() {
+        async function myFunction() {
             const data = {
                 fname: "thisisthefirstname",
                 lname: "thisisthelastname"
@@ -34,10 +34,10 @@
                 },
                 body: JSON.stringify(data)
             };
-            // fetch('/api', options);
             //fetch(‘http://localhost:PORT_OF_NODE_SERVER/api', options);
-            fetch('http://127.0.0.1:5500/api', options);
-
+            const response = await fetch('http://127.0.0.1:5500/api', options);
+            const jsonData = await response.json();
+            console.log(jsonData);
             console.log("fetch sent")
         }
     </script>
