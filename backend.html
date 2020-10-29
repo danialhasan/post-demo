@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend</title>
+    <style>
+        body {
+            background-color: rgb(25, 25, 25);
+            color: white
+        }
+
+        button {
+            width: 150px;
+            height: 45px;
+            background-color: whitesmoke;
+            color: black;
+            font-family: sans-serif;
+            border-radius: 25px;
+            border: none;
+            display: block;
+            margin-bottom: 25px;
+        }
+
+        .btn_backend {
+            background-color: #F6AE2D;
+            color: black;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>BACKEND</h1>
+    <p id="demo"></p>
+    <button onclick="returnLatestIndex()">Latest Index</button>
+
+    <a href="/index.html">
+        <button class="btn_backend">Frontend</button>
+    </a>
+
+</body>
+<script>
+    async function returnLatestIndex() {
+        // const data = {
+        //     fname: "thisisthefirstname",
+        //     lname: "thisisthelastname"
+        // }
+        // const options = {
+        //     method: 'POST',
+        //     withCredentials: false,
+        //     headers: {
+        //         'content-type': 'application/json',
+        //         'origin': 'http://localhost:8000',
+        //     },
+        //     body: JSON.stringify(data)
+        // };
+        //fetch(‘http://localhost:PORT_OF_NODE_SERVER/api', options);
+
+        // const response = await fetch('http://127.0.0.1:5500/api');
+        // const jsonData = await response.json();
+        // console.log(jsonData);
+        // console.log("get request sent");
+
+        fetch('http://127.0.0.1:5500/api')
+            .then(function (res) {
+                // res.text().then(function (text) {
+                //     console.log(text)
+                // });
+                res.json().then(function (json) {
+                    console.log(json)
+                });
+                /*
+    res.json('GET request received by server. Response: ' + test);
+         */
+            })
+            .catch(function (err) {
+                console.log("Fetching from server didn't work: " + err)
+            });
+    }
+</script>
+
+</html>

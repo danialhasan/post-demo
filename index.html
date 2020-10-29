@@ -11,6 +11,23 @@
             background-color: rgb(25, 25, 25);
             color: white
         }
+
+        button {
+            width: 150px;
+            height: 45px;
+            background-color: whitesmoke;
+            color: black;
+            font-family: sans-serif;
+            border-radius: 25px;
+            border: none;
+            display: block
+        }
+
+        .btn_backend {
+            background-color: #F6AE2D;
+            color: black;
+            margin-top: 50px;
+        }
     </style>
 </head>
 
@@ -19,10 +36,13 @@
     <h1>POST demo</h1>
     <p>Press THE button to send some data.</p>
     <button onclick="myFunction()">Click me</button>
+    <a href="/backend">
+        <button class="btn_backend">Backend</button>
+    </a>
     <script>
         async function myFunction() {
             const data = {
-                fname: "thisisthefirstname",
+                fname: "danial",
                 lname: "thisisthelastname"
             }
             const options = {
