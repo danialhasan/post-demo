@@ -28,12 +28,26 @@
             color: black;
             margin-top: 25px;
         }
+
+        #data_container {
+            max-width: 350px;
+            max-height: 350px;
+        }
+
+        #data_container p {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
     <h1>BACKEND</h1>
-    <p id="demo"></p>
+    <p id="demo">DEMO</p>
+    <div id="data_container">
+        <p class="data_fname"></p>
+        <p class="data_lname"></p>
+        <p class="data_collection"></p>
+    </div>
     <button onclick="returnLatestIndex()">Latest Index</button>
 
     <a href="/index.html">
@@ -43,6 +57,11 @@
 </body>
 <script>
     async function returnLatestIndex() {
+        const demo = document.getElementById("demo");
+        const container = document.getElementById("data_container");
+        const fname_p = document.getElementsByClassName("data_fname");
+        const lname_p = document.getElementsByClassName("data_lname");
+        const collection_p = document.getElementsByClassName("data_collection");
         // const data = {
         //     fname: "thisisthefirstname",
         //     lname: "thisisthelastname"
@@ -64,12 +83,34 @@
         // console.log("get request sent");
 
         fetch('http://127.0.0.1:5500/api')
-            .then(function (res) {
+            .then((res) => {
                 // res.text().then(function (text) {
                 //     console.log(text)
                 // });
                 res.json().then(function (json) {
-                    console.log(json)
+                    console.log(json);
+                    demo.innerText = JSON.stringify(json);
+                    /*
+                    You have now received the data from the server. Now, you need to get 
+                    all the data specific to when it was sent. To be specific: 
+                    Fetch all the data that has been pushed to the server ever since
+                    you last requested it. 
+                    --Example-- 
+
+                    Database: {1, 2, 3}
+                    fetch returns {1, 2, 3}. display on site.
+
+                    Fetch again: returns "error, nothing new on server."
+
+                    Database: {1, 2, 3, 4, 5}
+                    Fetch: Returns {4, 5} because that's what is new from last time.
+
+                    --End Of Example--
+
+                    When you get the latest data, render new html elements and replace 
+                    their innerhtml with the latest data you just got back. 
+            
+                    */
                 });
                 /*
     res.json('GET request received by server. Response: ' + test);

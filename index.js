@@ -30,20 +30,41 @@ app.use((req, res, next) => {
 });
 app.get('/api', function (req, res) {
     // var test = "testing";
-    database.find({
-        fname: 'danial'
-    }, function (err, docs) {
-        // docs is an array containing documents Mars, Earth, Jupiter
-        // If no document is found, docs is equal to []
-        // return docs
-        if (err) {
-            res.statusCode = 404;
-            res.json = err;
-        };
-        res.json(docs);
-    });
+
+    //on get request, send the latest data that was sent to the server. 
+    // database.find({
+    //     fname: 'danial'
+    // }, function (err, docs) {
+    //     // docs is an array containing documents Mars, Earth, Jupiter
+    //     // If no document is found, docs is equal to []
+    //     // return docs
+    //     if (err) {
+    //         res.statusCode = 404;
+    //         res.json = err;
+    //     };
+    //     res.json(docs);
+    // });
     // res.send("test");
 
+    // database.findOne({}, {
+    //     sort: {
+    //         _id: -1
+    //     },
+    //     limit: 1
+    // });
+
+    database.findOne({
+        collection: 'names'
+    }).sort({
+        _id: -1
+    }).exec(function (err, docs) {
+        // docs is [doc1, doc3, doc2]
+        res.json(docs);
+    });
+
+    // database.find({
+    //     collection: 'names'
+    // })
 })
 app.post('/api', (req, res) => {
     console.log("received request");
@@ -59,15 +80,16 @@ app.post('/api', (req, res) => {
     console.log(req.body);
     console.log("First name: " + req.body.fname);
     console.log("Last name: " + req.body.lname);
+    console.log("Collection: " + req.body.collection);
 
     // console.table(database)
-    // TODO: add json parsing. look to coding train video. 
 
     res.json({
         status: 'success',
         timestamp: timestamp,
         firstname: req.body.fname,
         lastname: req.body.lname,
+        collection: req.body.collection
         // database: database
     })
 });
