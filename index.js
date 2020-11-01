@@ -3,7 +3,9 @@ const app = express();
 const mongo = require('mongodb').MongoClient
 const datastore = require("nedb");
 
-
+// var ts
+var lastTimeGetRequestWasMade = 0;
+var currentDate;
 app.listen(5500, () => console.log("listening to port 5500"));
 app.use(express.static('public'));
 app.use(express.json({
@@ -29,8 +31,8 @@ app.use((req, res, next) => {
 
 });
 app.get('/api', function (req, res) {
+    currentDate = new Date();
     // var test = "testing";
-
     //on get request, send the latest data that was sent to the server. 
     // database.find({
     //     fname: 'danial'
@@ -53,34 +55,69 @@ app.get('/api', function (req, res) {
     //     limit: 1
     // });
 
-    database.findOne({
-        collection: 'names'
+    // database.findOne({
+    //     collection: 'names'
+    // }).sort({
+    //     _id: -1
+    // }).exec(function (err, docs) {
+    //     // docs is [doc1, doc3, doc2]
+    //     res.json(docs);
+    // });
+    database.find({
+        //find all entries with a timestamp greater than the previous, last-seen timestamp
+        // timestamp: {
+        //     // $gt: last_seen_timestamp
+        //     $gt: timestamp2
+        //     //last_seen_timestamp is the timestamp of the second last entry.
+        // }
+        lname: 'thisisthelastname',
+        timestamp: {
+            $gt: lastTimeGetRequestWasMade,
+            $ls: new Date()
+            //WONT WORK UNTIL THERE HAS BEEN A POST REQUEST SUBMITTED. THIS IS BECAUSE
+            //WHEN FORM IS REFRESHED, TS = UNDEFINED
+        }
+
     }).sort({
-        _id: -1
-    }).exec(function (err, docs) {
-        // docs is [doc1, doc3, doc2]
-        res.json(docs);
-    });
+        timestamp: -1
+        // createdAt: -1
+    }).exec((err, docs) => {
+        // docs is[doc1, doc3, doc2]
+        res.json({
+            docs,
+            // ts
+        });
+    })
+    lastTimeGetRequestWasMade = new Date();
 
     // database.find({
     //     collection: 'names'
     // })
 })
-app.post('/api', (req, res) => {
+app.post('/frontend', (req, res) => {
+    //when a post is made to domain.com/frontend, take the timestamp of the request and hold it. It will be used in 
+    //get purposes. 
+
+    //in the get handler, find all db entries with a timestamp higher than the timestamp recieved by the post. 
+    //Submit them. If there are none, nothing will be submitted. If there are any, all of them over the timestamp 
+    //written will be sent. 
+
     console.log("received request");
     // i++;
     var data = req.body;
-    const timestamp = Date.now();
-    data.timestamp = timestamp;
 
+    const timestamp = Date.now();
+
+    data.timestamp = timestamp;
     // databaseArr.push("Requests: " + i + " , data: " + req.body.fname + ", " + req.body.lname);
 
     database.insert(data);
+    // ts = data.timestamp;
 
-    console.log(req.body);
-    console.log("First name: " + req.body.fname);
-    console.log("Last name: " + req.body.lname);
-    console.log("Collection: " + req.body.collection);
+    // console.log("First name: " + req.body.fname);
+    // console.log("Last name: " + req.body.lname);
+    // console.log("Collection: " + req.body.collection);
+    // console.log("timestamp: " + data.timestamp);
 
     // console.table(database)
 
@@ -89,7 +126,9 @@ app.post('/api', (req, res) => {
         timestamp: timestamp,
         firstname: req.body.fname,
         lastname: req.body.lname,
-        collection: req.body.collection
+        collection: req.body.collection,
         // database: database
+        // ts: data.timestamp
+
     })
 });

@@ -62,6 +62,8 @@
         const fname_p = document.getElementsByClassName("data_fname");
         const lname_p = document.getElementsByClassName("data_lname");
         const collection_p = document.getElementsByClassName("data_collection");
+        var id1 = 0;
+        var id2;
         // const data = {
         //     fname: "thisisthefirstname",
         //     lname: "thisisthelastname"
@@ -87,9 +89,25 @@
                 // res.text().then(function (text) {
                 //     console.log(text)
                 // });
+
                 res.json().then(function (json) {
                     console.log(json);
-                    demo.innerText = JSON.stringify(json);
+                    console.log(json._id)
+                    // id1 = json._id;
+                    // if (json._id = id1) {
+                    //     //check if the response json id is the same as id1. if true, its been 
+                    //     //sent already by the server and no more responses have been recorded.
+                    //     //This is because its saying the latest entry is the same as the previous 
+                    //     //one that was requested.
+                    //     console.log("FETCH IF RUN");
+                    //     // alert("Alert: No more entries have been recorded.");
+                    //     // return;
+                    // } else {
+                    //     id1 = json._id;
+                    //     console.log("FETCH ELSE RUN");
+                    // }
+
+                    demo.textContent = 'Latest entry: ' + JSON.stringify(json);
                     /*
                     You have now received the data from the server. Now, you need to get 
                     all the data specific to when it was sent. To be specific: 
