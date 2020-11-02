@@ -12,15 +12,16 @@
         }
 
         button {
-            width: 150px;
+            min-width: 150px;
             height: 45px;
             background-color: whitesmoke;
             color: black;
             font-family: sans-serif;
             border-radius: 25px;
             border: none;
-            display: block;
-            margin-bottom: 25px;
+            /* display: block; */
+            margin: 25px 25px;
+            padding: 0px 25px;
         }
 
         .btn_backend {
@@ -48,56 +49,83 @@
         <p class="data_lname"></p>
         <p class="data_collection"></p>
     </div>
-    <button onclick="returnLatestIndex()">Latest Index</button>
+    <button onclick="returnLatestIndex()">All entries</button>
+    <button onclick="returnLatestIndex1Minute()">All entries from 1 minute ago</button>
+    <button onclick="returnLatestIndex2Minute()">All entries from 2 minutes ago</button>
 
+    <button onclick="deleteIndexes()">Delete all indexes</button>
     <a href="/index.html">
         <button class="btn_backend">Frontend</button>
     </a>
 
 </body>
 <script>
-    async function returnLatestIndex() {
-        const demo = document.getElementById("demo");
-        const container = document.getElementById("data_container");
-        const fname_p = document.getElementsByClassName("data_fname");
-        const lname_p = document.getElementsByClassName("data_lname");
-        const collection_p = document.getElementsByClassName("data_collection");
-        var id1 = 0;
-        var id2;
-        // const data = {
-        //     fname: "thisisthefirstname",
-        //     lname: "thisisthelastname"
-        // }
-        // const options = {
-        //     method: 'POST',
-        //     withCredentials: false,
-        //     headers: {
-        //         'content-type': 'application/json',
-        //         'origin': 'http://localhost:8000',
-        //     },
-        //     body: JSON.stringify(data)
-        // };
-        //fetch(‘http://localhost:PORT_OF_NODE_SERVER/api', options);
+    const demo = document.getElementById("demo");
+    const container = document.getElementById("data_container");
+    const fname_p = document.getElementsByClassName("data_fname");
+    const lname_p = document.getElementsByClassName("data_lname");
+    const collection_p = document.getElementsByClassName("data_collection");
 
-        // const response = await fetch('http://127.0.0.1:5500/api');
-        // const jsonData = await response.json();
-        // console.log(jsonData);
-        // console.log("get request sent");
-
-        fetch('http://127.0.0.1:5500/api')
+    async function deleteIndexes() {
+        fetch('http://127.0.0.1:5500/delete')
             .then((res) => {
-                res.json().then(function (json) {
-                    console.log(json);
-                    console.log(json._id)
-                    demo.textContent = 'Latest entry: ' + JSON.stringify(json);
-                });
-                /*
-    res.json('GET request received by server. Response: ' + test);
-         */
+                res.json().then((json) => {
+                    console.log(json.message)
+                })
             })
-            .catch(function (err) {
-                console.log("Fetching from server didn't work: " + err)
-            });
+    }
+
+    async function returnLatestIndex() {
+        const response = await fetch('http://127.0.0.1:5500/latestindex');
+        const jsonData = await response.json().catch((err) => {
+            console.log("Fetching from server didn't work: " + err)
+        });
+        if (jsonData.docs.length == 0) {
+            console.log(
+                "Warning: Cannot find any entries in database. Fetch response.docs array length == 0."
+            );
+            demo.textContent = 'There are no entries in the database. ';
+            return;
+        }
+        console.log(jsonData.docs);
+        // console.log(jsonData._id);
+        demo.textContent = 'Latest entry: ' + JSON.stringify(jsonData);
+    }
+
+    async function returnLatestIndex1Minute() {
+        const response = await fetch('http://127.0.0.1:5500/latestindex1min');
+        const jsonData = await response.json().catch((err) => {
+            console.log("Fetching from server didn't work: " + err)
+        });
+        if (jsonData.docs.length == 0) {
+            console.log(
+                "Warning: Cannot find any entries in database. Fetch response.docs array length == 0."
+            );
+            demo.textContent = 'There are no entries in the database. ';
+            return;
+        }
+        console.log(jsonData.docs);
+        // console.log(jsonData);
+        // console.log(jsonData._id);
+        demo.textContent = 'Latest entry: ' + JSON.stringify(jsonData);
+    }
+
+    async function returnLatestIndex2Minute() {
+
+        const response = await fetch('http://127.0.0.1:5500/latestindex2min');
+        const jsonData = await response.json().catch((err) => {
+            console.log("Fetching from server didn't work: " + err)
+        });
+        if (jsonData.docs.length == 0) {
+            console.log(
+                "Warning: Cannot find any entries in database. Fetch response.docs array length == 0."
+            );
+            demo.textContent = 'There are no entries in the database. ';
+            return;
+        }
+        console.log(jsonData);
+        // console.log(jsonData._id);
+        demo.textContent = 'Latest entry: ' + JSON.stringify(jsonData);
     }
 </script>
 
