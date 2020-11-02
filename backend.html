@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Backend</title>
+    <link src="/reset.css" type="text/css" rel="stylesheet" />
     <style>
         body {
             background-color: rgb(25, 25, 25);
@@ -31,8 +32,10 @@
         }
 
         #data_container {
+            width: auto;
             max-width: 350px;
             max-height: 350px;
+            background-image: linear-gradient(90deg, #023e8a, #0096c7);
         }
 
         #data_container p {
@@ -45,9 +48,10 @@
     <h1>BACKEND</h1>
     <p id="demo">DEMO</p>
     <div id="data_container">
-        <p class="data_fname"></p>
-        <p class="data_lname"></p>
-        <p class="data_collection"></p>
+        <p id="data_fname">first name: fname</p>
+        <p id="data_lname">last name: lname</p>
+        <p id="data_timestamp">timestamp: timestamp</p>
+        <p id="data__id">database id: _id</p>
     </div>
     <button onclick="returnLatestIndex()">All entries</button>
     <button onclick="returnLatestIndex1Minute()">All entries from 1 minute ago</button>
@@ -57,14 +61,15 @@
     <a href="/index.html">
         <button class="btn_backend">Frontend</button>
     </a>
-
 </body>
 <script>
+    //public variables to manipulate dom from all functions
     const demo = document.getElementById("demo");
     const container = document.getElementById("data_container");
-    const fname_p = document.getElementsByClassName("data_fname");
-    const lname_p = document.getElementsByClassName("data_lname");
-    const collection_p = document.getElementsByClassName("data_collection");
+    const fname_p = document.getElementById("data_fname");
+    const lname_p = document.getElementById("data_lname");
+    const timestamp_p = document.getElementById("data_timestamp");
+    const _id_p = document.getElementById("data__id");
 
     async function deleteIndexes() {
         fetch('http://127.0.0.1:5500/delete')
@@ -88,10 +93,35 @@
             return;
         }
         console.log(jsonData.docs);
+        console.log(jsonData.docs[jsonData.docs.length - 1].fname);
         // console.log(jsonData._id);
         demo.textContent = 'Latest entry: ' + JSON.stringify(jsonData);
-    }
 
+        //fill temporary card with last entry data
+
+        fname_p.textContent = "First name: " + jsonData.docs[jsonData.docs.length - 1].fname;
+        lname_p.textContent = "Last name: " + jsonData.docs[jsonData.docs.length - 1].lname;
+        timestamp_p.textContent = "Timestamp: " + jsonData.docs[jsonData.docs.length - 1].timestamp;
+        _id_p.textContent = "Database ID: " + jsonData.docs[jsonData.docs.length - 1]._id;
+
+    }
+    //card class. This is the template for each and every card that will display info. 
+    class Card {
+        constructor(firstname, lastname, timestamp, _id) {
+            this.firstname = firstname;
+            this.lastname = lastname;
+            this.timestamp = timestamp;
+            this._id = _id;
+        }
+    }
+    // this function will create an instance of the Card class and place database values into the class as parameters.
+    //simple, right?    
+    function createCard() {
+        fname_p.textContent = "First name: " + jsonData.docs[jsonData.docs.length - 1].fname;
+        lname_p.textContent = "Last name: " + jsonData.docs[jsonData.docs.length - 1].lname;
+        timestamp_p.textContent = "Timestamp: " + jsonData.docs[jsonData.docs.length - 1].timestamp;
+        _id_p.textContent = "Database ID: " + jsonData.docs[jsonData.docs.length - 1]._id;
+    }
     async function returnLatestIndex1Minute() {
         const response = await fetch('http://127.0.0.1:5500/latestindex1min');
         const jsonData = await response.json().catch((err) => {
@@ -101,7 +131,7 @@
             console.log(
                 "Warning: Cannot find any entries in database. Fetch response.docs array length == 0."
             );
-            demo.textContent = 'There are no entries in the database. ';
+            demo.textContent = 'There are no entries from 1 minute ago in the database. ';
             return;
         }
         console.log(jsonData.docs);
@@ -118,7 +148,7 @@
         });
         if (jsonData.docs.length == 0) {
             console.log(
-                "Warning: Cannot find any entries in database. Fetch response.docs array length == 0."
+                "Warning: Cannot find any entries from 2 minutes ago in database. Fetch response.docs array length == 0."
             );
             demo.textContent = 'There are no entries in the database. ';
             return;
