@@ -33,19 +33,37 @@
 
         #data_container {
             width: auto;
-            max-width: 350px;
-            max-height: 350px;
+            height: auto;
+            max-width: 250px;
+            max-height: 550px;
             background-image: linear-gradient(90deg, #023e8a, #0096c7);
+            border-radius: 25px;
+            padding: 10px;
+            margin: 25px;
         }
 
         #data_container p {
             display: block;
+            min-width: 200px;
+            /* border: 1px solid red; */
+            padding: 0;
+            font-family: sans-serif;
+
         }
     </style>
 </head>
 
 <body>
     <h1>BACKEND</h1>
+    <button onclick="returnLatestIndex()">All entries</button>
+    <button onclick="returnLatestIndex1Minute()">All entries from 1 minute ago</button>
+    <button onclick="returnLatestIndex2Minute()">All entries from 2 minutes ago</button>
+
+    <button onclick="deleteIndexes()">Delete all indexes</button>
+    <button style="background-color: red; color:white;" onclick="createCard()">Create card</button>
+    <a href="/index.html">
+        <button class="btn_backend">Frontend</button>
+    </a>
     <p id="demo">DEMO</p>
     <div id="data_container">
         <p id="data_fname">first name: fname</p>
@@ -53,14 +71,22 @@
         <p id="data_timestamp">timestamp: timestamp</p>
         <p id="data__id">database id: _id</p>
     </div>
-    <button onclick="returnLatestIndex()">All entries</button>
-    <button onclick="returnLatestIndex1Minute()">All entries from 1 minute ago</button>
-    <button onclick="returnLatestIndex2Minute()">All entries from 2 minutes ago</button>
-
-    <button onclick="deleteIndexes()">Delete all indexes</button>
-    <a href="/index.html">
-        <button class="btn_backend">Frontend</button>
-    </a>
+    <template>
+        <div id="data_container">
+            <p id="data_fname">first name: fname</p>
+            <!-- <p id="data_lname">last name: lname</p>
+            <p id="data_timestamp">timestamp: timestamp</p>
+            <p id="data__id">database id: _id</p> -->
+        </div>
+    </template>
+    <!-- <template>
+        <div id="data_container">
+            <p id="data_fname"></p>
+            <p id="data_lname"></p>
+            <p id="data_timestamp"></p>
+            <p id="data__id"></p>
+        </div>
+    </template> -->
 </body>
 <script>
     //public variables to manipulate dom from all functions
@@ -94,6 +120,9 @@
         }
         console.log(jsonData.docs);
         console.log(jsonData.docs[jsonData.docs.length - 1].fname);
+        for (let i = 0; i < jsonData.docs.length; i++) {
+            console.log(i)
+        }
         // console.log(jsonData._id);
         demo.textContent = 'Latest entry: ' + JSON.stringify(jsonData);
 
@@ -104,6 +133,7 @@
         timestamp_p.textContent = "Timestamp: " + jsonData.docs[jsonData.docs.length - 1].timestamp;
         _id_p.textContent = "Database ID: " + jsonData.docs[jsonData.docs.length - 1]._id;
 
+        createCard(jsonData.docs);
     }
     //card class. This is the template for each and every card that will display info. 
     class Card {
@@ -115,12 +145,45 @@
         }
     }
     // this function will create an instance of the Card class and place database values into the class as parameters.
-    //simple, right?    
-    function createCard() {
-        fname_p.textContent = "First name: " + jsonData.docs[jsonData.docs.length - 1].fname;
-        lname_p.textContent = "Last name: " + jsonData.docs[jsonData.docs.length - 1].lname;
-        timestamp_p.textContent = "Timestamp: " + jsonData.docs[jsonData.docs.length - 1].timestamp;
-        _id_p.textContent = "Database ID: " + jsonData.docs[jsonData.docs.length - 1]._id;
+    //simple, right?  
+    var myArr = [1, 2, 3];
+
+    function createCard(x) {
+        //values are equal to the latest database entry
+        // fname_p.textContent = "First name: " + jsonData.docs[jsonData.docs.length - 1].fname;
+        // lname_p.textContent = "Last name: " + jsonData.docs[jsonData.docs.length - 1].lname;
+        // timestamp_p.textContent = "Timestamp: " + jsonData.docs[jsonData.docs.length - 1].timestamp;
+        // _id_p.textContent = "Database ID: " + jsonData.docs[jsonData.docs.length - 1]._id;
+        var temp, item, itemChild, a, i, j, k;
+        var k = 0;
+        temp = document.getElementsByTagName("template")[0];
+        //get the div element from the template:
+        item = temp.content.querySelector("div");
+        //for each item in the jsonData.docs array:
+        // for (i = 0; i < x.length; i++) {
+        for (i = 0; i < x.length - 1; i++) {
+            //Create a new node, based on the template:
+            a = document.importNode(item, true); //div in template, data-container
+            //children, as an array
+            itemChild = a.childNodes;
+            //Loop through children to add data from the array into each child:
+            // a.textContent += myArr[i];
+            for (j = 0; j <= itemChild.length - 1; j++) {
+                itemChild[j].textContent = i;
+                // console.log('Value of j: ' + j)
+                console.log("itemChild[j] = " + itemChild[j])
+                console.log("k value: " + k)
+                console.log("j value: " + j)
+                k++;
+            }
+
+            // console.log("Item Children: " + itemChild.length)
+
+            //append the new node wherever you like:
+            document.body.appendChild(a);
+        }
+        console.log("Cards created!")
+
     }
     async function returnLatestIndex1Minute() {
         const response = await fetch('http://127.0.0.1:5500/latestindex1min');
@@ -150,7 +213,7 @@
             console.log(
                 "Warning: Cannot find any entries from 2 minutes ago in database. Fetch response.docs array length == 0."
             );
-            demo.textContent = 'There are no entries in the database. ';
+            demo.textContent = 'There are no entries in the database from 2 minutes ago. ';
             return;
         }
         console.log(jsonData);
