@@ -91,7 +91,7 @@ app.get('/latestindex', function (req, res) {
         }
 
     }).sort({
-        timestamp: -1
+        timestamp: -1 //return list of documents, but flipped. latest indexes first. 
     }).exec((err, docs) => {
         res.json({
             docs

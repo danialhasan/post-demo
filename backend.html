@@ -40,6 +40,7 @@
             border-radius: 25px;
             padding: 10px;
             margin: 25px;
+            color: red;
         }
 
         #data_container p {
@@ -48,7 +49,7 @@
             /* border: 1px solid red; */
             padding: 0;
             font-family: sans-serif;
-
+            color: white;
         }
     </style>
 </head>
@@ -73,10 +74,10 @@
     </div>
     <template>
         <div id="data_container">
-            <p id="data_fname">first name: fname</p>
-            <!-- <p id="data_lname">last name: lname</p>
-            <p id="data_timestamp">timestamp: timestamp</p>
-            <p id="data__id">database id: _id</p> -->
+            <p id="data_fname">first name: placeholder</p>
+            <p id="data_lname">last name: placeholder</p>
+            <p id="data_timestamp">timestamp: placeholder</p>
+            <p id="data__id">database id: placeholder</p>
         </div>
     </template>
     <!-- <template>
@@ -87,8 +88,14 @@
             <p id="data__id"></p>
         </div>
     </template> -->
+
 </body>
 <script>
+    /*
+     *TODO: implement json.parse to this script to parse json strings from web server. 
+     *optional, but it might be the problem.
+     */
+
     //public variables to manipulate dom from all functions
     const demo = document.getElementById("demo");
     const container = document.getElementById("data_container");
@@ -124,7 +131,8 @@
             console.log(i)
         }
         // console.log(jsonData._id);
-        demo.textContent = 'Latest entry: ' + JSON.stringify(jsonData);
+        demo.textContent = 'Latest entries: ' + JSON.stringify(jsonData.docs);
+        console.log(jsonData)
 
         //fill temporary card with last entry data
 
@@ -133,7 +141,49 @@
         timestamp_p.textContent = "Timestamp: " + jsonData.docs[jsonData.docs.length - 1].timestamp;
         _id_p.textContent = "Database ID: " + jsonData.docs[jsonData.docs.length - 1]._id;
 
-        createCard(jsonData.docs);
+        var objVal = Object.values(jsonData)
+        /*
+        objVal = array of jsonData object values. jsonData.docs is already an array, this doesn't do anything
+        because its using object.values on something that isn't an object. 
+
+        it replaces the keys, in 'key-value pairs' with array indices. 
+        
+        It makes more sense to use Object.values on jsonData, which is an object. THis returns an array
+        of its values, which means that it returns an array consisting of arrays. The internal array 
+        is at index 0 of the external array. 
+
+        Object.values(jsonData) = [
+            [
+                {document1},
+                {document2},
+                {documentx}
+            ]
+        ]
+
+        */
+        console.log(objVal)
+        console.log("jsonData.docs: " + jsonData.docs)
+        console.log("jsonData.docs: " + JSON.stringify(jsonData.docs[0]))
+        //only use JSON.stringify(jsonData.docs[0]) for displaying to console.
+
+        /*
+        late night thoughts: 
+
+        Why haven't I been using json.parse to parse the json strings received by the server? 
+        If jsonData is a json string of an array of objects, it would not work because it is an array,
+        not an object. I think i have forgotten about how the server is returning an array of objects,
+        in string format, rather than a bunch of objects. It makes sense. Overall I think the card creation
+        and looping through of them for their childNodes was messy, and some errors that would hsve otherwise been 
+        nonexistent, popped up because something was wrong in the HTML template or something. Taking a good look at 
+        what the server is giving me and what I'm doing with that information is necessary. I may have reached the 
+        point where a salvaging of ideas combined with total rewriting of this part of the code 
+        might be necessary. 
+        */
+
+        createCard(objVal[0]);
+        //objVal[0] is the jsonData.docs array that has the entries
+        //jsonData.docs is not an array, it is an OBJECT of ARRAYS.
+        //return an array of values from it.
     }
     //card class. This is the template for each and every card that will display info. 
     class Card {
@@ -149,39 +199,131 @@
     var myArr = [1, 2, 3];
 
     function createCard(x) {
+        //TODO: check if there are already cards. If so, do nothing. 
+
+        /*
+        --DEBUG NOTES--
+Sometimes the error is not in the code you're currently writing,
+but instead in code that you wrote some time ago and forgot about.
+
+        - createCard called only once 
+            - this means the recursive stuff is happening inside the function
+        -switch cases 1-4 being called repeatedly, never default or case 5
+        -childNodes of card container have innertext values of undefined
+
+option 1:
+loop through each index in jsondata.docs and render 
+the template however many times the index is long. Then, 
+loop through every rendered template 4 times and change the childNode values. 
+This probably won't work from how we'd need to set the values of each 
+childnode to indexes of the jsonData.docs array. 
+
+option 2: 
+loop through each index in jsonData.docs, with the purpose of
+rendering the template [jsonData.docs.length] times. 
+        */
         //values are equal to the latest database entry
         // fname_p.textContent = "First name: " + jsonData.docs[jsonData.docs.length - 1].fname;
         // lname_p.textContent = "Last name: " + jsonData.docs[jsonData.docs.length - 1].lname;
         // timestamp_p.textContent = "Timestamp: " + jsonData.docs[jsonData.docs.length - 1].timestamp;
         // _id_p.textContent = "Database ID: " + jsonData.docs[jsonData.docs.length - 1]._id;
+        console.log("createCard called");
+        console.log(x)
+        console.log("x.length: " + x.length) //returns 355, as in 355 characters.
+        // This is because x is a josn string version of the objVal array
         var temp, item, itemChild, a, i, j, k;
         var k = 0;
         temp = document.getElementsByTagName("template")[0];
         //get the div element from the template:
         item = temp.content.querySelector("div");
-        //for each item in the jsonData.docs array:
         // for (i = 0; i < x.length; i++) {
-        for (i = 0; i < x.length - 1; i++) {
-            //Create a new node, based on the template:
-            a = document.importNode(item, true); //div in template, data-container
-            //children, as an array
-            itemChild = a.childNodes;
+
+
+        for (i = 0; i < x.length; i++) {
+            //for each item in the jsonData.docs array,
+            //create a new node based on the template:
+            templateDiv = document.importNode(item, true); //div in template, data-container
+            //children, as a COLLECTION
+            itemChild = templateDiv.childNodes;
+            var itemChildArr = Array.from(itemChild);
+            //NOTE: FOR LOOP IS ITERATING WITH ARRAY VERSION OF ITEMCHILD
             //Loop through children to add data from the array into each child:
             // a.textContent += myArr[i];
-            for (j = 0; j <= itemChild.length - 1; j++) {
-                itemChild[j].textContent = i;
-                // console.log('Value of j: ' + j)
-                console.log("itemChild[j] = " + itemChild[j])
+            for (j = 0; j < itemChildArr.length; j++) {
+                debugger;
+                switch (j) {
+                    /*
+                    itemChildArr[1] = fname
+                    itemChildArr[3] = lname
+                    itemChildArr[5] = timestamp
+                    itemChildArr[7] = database id
+                    */
+                    case 0:
+                        // itemChildArr[0].innerText = "first name: " + x[0].fname;
+                        // itemChildArr[0].innerText = "CASE 0 CALLED";
+                        console.log("%cSWITCH CASE 0", "background-color:dodgerblue; padding:10px");
+                        break;
+                    case 1: //fname
+                        // itemChildArr[1].innerText = "First name: " + x[i].fname;
+                        // console.log("item child index 3= " + itemChildArr[3].textContent)
+                        console.log("%cSWITCH CASE 1", "background-color:dodgerblue; padding:10px");
+                        break;
+                    case 2: //lname
+                        itemChildArr[2].innerText = "First name: " + x[i].fname;
+                        console.log("%cSWITCH CASE 2", "background-color:dodgerblue; padding:10px");
+                        break;
+                    case 3: //timestamp
+                        // debugger;
+                        // itemChildArr[3].innerText = "Timestamp: " + x[i].timestamp;
+                        console.log("%cSWITCH CASE 3", "background-color:dodgerblue; padding:10px");
+                        break;
+                    case 4: //database id
+                        itemChildArr[4].innerText = "Last name: " + x[i].lname;
+                        console.log("%cSWITCH CASE 4", "background-color:dodgerblue; padding:10px");
+                        // return;
+                        break;
+                    case 5:
+                        // itemChildArr[5].textContent = "case 5 activated";
+                        console.log("case 5 activated, console.");
+                        console.log("%cSWITCH CASE 5", "background-color:dodgerblue; padding:10px");
+                        break;
+                    case 6:
+                        // debugger;
+                        itemChildArr[6].innerText = "Timestamp: " + x[i].timestamp;
+                        //this part gives an error: cannot find timestamp of undefined.
+                        // this is because x[6] doesn't exist - the array, x, goes up to 5 right now.
+                        console.log("%cSWITCH CASE 6", "background-color:dodgerblue; padding:10px");
+
+                        break;
+                    case 7:
+                        console.log("%cSWITCH CASE 7", "background-color:dodgerblue; padding:10px");
+                        break;
+                    case 8:
+                        itemChildArr[8].innerText = "Database ID: " + x[i]._id;
+                        console.log("%cSWITCH CASE 8", "background-color:dodgerblue; padding:10px");
+                        break;
+                    default:
+                        console.log("Default activated")
+                }
+
+                // itemChildArr[j].textContent = i;
+                // // console.log('Value of j: ' + j)
+                console.log("itemChildArr[j] = " + itemChildArr[j])
                 console.log("k value: " + k)
                 console.log("j value: " + j)
                 k++;
+                // debugger;
             }
 
             // console.log("Item Children: " + itemChild.length)
-
+            console.log("i value: " + i);
+            console.log("x value: " + x.length);
             //append the new node wherever you like:
-            document.body.appendChild(a);
+            document.body.appendChild(templateDiv);
+            console.log("Card Appended")
+
         }
+
         console.log("Cards created!")
 
     }
