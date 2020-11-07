@@ -166,24 +166,9 @@
         console.log("jsonData.docs: " + JSON.stringify(jsonData.docs[0]))
         //only use JSON.stringify(jsonData.docs[0]) for displaying to console.
 
-        /*
-        late night thoughts: 
-
-        Why haven't I been using json.parse to parse the json strings received by the server? 
-        If jsonData is a json string of an array of objects, it would not work because it is an array,
-        not an object. I think i have forgotten about how the server is returning an array of objects,
-        in string format, rather than a bunch of objects. It makes sense. Overall I think the card creation
-        and looping through of them for their childNodes was messy, and some errors that would hsve otherwise been 
-        nonexistent, popped up because something was wrong in the HTML template or something. Taking a good look at 
-        what the server is giving me and what I'm doing with that information is necessary. I may have reached the 
-        point where a salvaging of ideas combined with total rewriting of this part of the code 
-        might be necessary. 
-        */
 
         createCard(objVal[0]);
         //objVal[0] is the jsonData.docs array that has the entries
-        //jsonData.docs is not an array, it is an OBJECT of ARRAYS.
-        //return an array of values from it.
     }
     //card class. This is the template for each and every card that will display info. 
     class Card {
@@ -246,86 +231,166 @@ rendering the template [jsonData.docs.length] times.
             //children, as a COLLECTION
             itemChild = templateDiv.childNodes;
             var itemChildArr = Array.from(itemChild);
+
             //NOTE: FOR LOOP IS ITERATING WITH ARRAY VERSION OF ITEMCHILD
             //Loop through children to add data from the array into each child:
             // a.textContent += myArr[i];
-            for (j = 0; j < itemChildArr.length; j++) {
-                debugger;
+            // for (j = 0; j < itemChildArr.length; j++) {
+            //     // debugger;
+            //     switch (j) {
+            //         /*
+            //         itemChildArr[1] = fname
+            //         itemChildArr[3] = lname
+            //         itemChildArr[5] = timestamp
+            //         itemChildArr[7] = database id
+            //         */
+            //         case 0:
+            //             // itemChildArr[0].innerText = "first name: " + x[0].fname;
+            //             // itemChildArr[0].innerText = "CASE 0 CALLED";
+            //             console.log("%cSWITCH CASE 0", "background-color:dodgerblue; padding:10px");
+            //             break;
+            //         case 1: //fname
+            //             // itemChildArr[1].innerText = "First name: " + x[i].fname;
+            //             // console.log("item child index 3= " + itemChildArr[3].textContent)
+            //             console.log("%cSWITCH CASE 1", "background-color:dodgerblue; padding:10px");
+            //             break;
+            //         case 2: //lname
+            //             itemChildArr[2].innerText = "First name: " + x[i].fname;
+            //             console.log("%cSWITCH CASE 2", "background-color:dodgerblue; padding:10px");
+            //             break;
+            //         case 3: //timestamp
+            //             // debugger;
+            //             // itemChildArr[3].innerText = "Timestamp: " + x[i].timestamp;
+            //             console.log("%cSWITCH CASE 3", "background-color:dodgerblue; padding:10px");
+            //             break;
+            //         case 4: //database id
+            //             itemChildArr[4].innerText = "Last name: " + x[i].lname;
+            //             console.log("%cSWITCH CASE 4", "background-color:dodgerblue; padding:10px");
+            //             // return;
+            //             break;
+            //         case 5:
+            //             // itemChildArr[5].textContent = "case 5 activated";
+            //             console.log("case 5 activated, console.");
+            //             console.log("%cSWITCH CASE 5", "background-color:dodgerblue; padding:10px");
+            //             break;
+            //         case 6:
+            //             // debugger;
+            //             itemChildArr[6].innerText = "Timestamp: " + x[i].timestamp;
+            //             //this part gives an error: cannot find timestamp of undefined.
+            //             // this is because x[6] doesn't exist - the array, x, goes up to 5 right now.
+            //             console.log("%cSWITCH CASE 6", "background-color:dodgerblue; padding:10px");
+
+            //             break;
+            //         case 7:
+            //             console.log("%cSWITCH CASE 7", "background-color:dodgerblue; padding:10px");
+            //             break;
+            //         case 8:
+            //             itemChildArr[8].innerText = "Database ID: " + x[i]._id;
+            //             console.log("%cSWITCH CASE 8", "background-color:dodgerblue; padding:10px");
+            //             break;
+            //         default:
+            //             console.log("Default activated")
+            //     }
+
+            //     // itemChildArr[j].textContent = i;
+            //     // // console.log('Value of j: ' + j)
+            //     console.log("itemChildArr[j] = " + itemChildArr[j])
+            //     console.log("k value: " + k)
+            //     console.log("j value: " + j)
+            //     k++;
+            //     // debugger;
+            // }
+            // let l;
+            for (var j = 0; j < itemChild.length; j++) {
+                /*
+                itemChild is a nodeList of the children of templateDiv. 
+                index: value
+                0: text
+                1: p#data_fname
+                2: text
+                3: p#data_lname
+                4: text
+                5: p#data_timestamp
+                6: text
+                7: p#data__id
+                8: text
+
+                when j = 1, 3, 5, 7: 
+                take the nextSibling of itemChild[j] (which is equal to the text the html tags encapsulate), 
+                get their text value by adding .childNodes[0]. Change that to x[i].property
+
+                example: j= 3
+
+                itemChild[3].nextSibling.childNodes[0] = x[i].lname
+                */
+
+
+                // debugger;
+
+                console.log("x[i].fname: ");
+                console.log(x[i].fname);
                 switch (j) {
-                    /*
-                    itemChildArr[1] = fname
-                    itemChildArr[3] = lname
-                    itemChildArr[5] = timestamp
-                    itemChildArr[7] = database id
-                    */
                     case 0:
-                        // itemChildArr[0].innerText = "first name: " + x[0].fname;
-                        // itemChildArr[0].innerText = "CASE 0 CALLED";
-                        console.log("%cSWITCH CASE 0", "background-color:dodgerblue; padding:10px");
+                        itemChild[j].nextSibling.childNodes[0].textContent = x[i].fname;
                         break;
-                    case 1: //fname
-                        // itemChildArr[1].innerText = "First name: " + x[i].fname;
-                        // console.log("item child index 3= " + itemChildArr[3].textContent)
-                        console.log("%cSWITCH CASE 1", "background-color:dodgerblue; padding:10px");
+                    case 1:
                         break;
-                    case 2: //lname
-                        itemChildArr[2].innerText = "First name: " + x[i].fname;
-                        console.log("%cSWITCH CASE 2", "background-color:dodgerblue; padding:10px");
+                    case 2:
+                        itemChild[j].nextSibling.childNodes[0].textContent = x[i].lname;
                         break;
-                    case 3: //timestamp
-                        // debugger;
-                        // itemChildArr[3].innerText = "Timestamp: " + x[i].timestamp;
-                        console.log("%cSWITCH CASE 3", "background-color:dodgerblue; padding:10px");
+                    case 3:
                         break;
-                    case 4: //database id
-                        itemChildArr[4].innerText = "Last name: " + x[i].lname;
-                        console.log("%cSWITCH CASE 4", "background-color:dodgerblue; padding:10px");
-                        // return;
+                    case 4:
+                        itemChild[j].nextSibling.childNodes[0].textContent = x[i].timestamp;
                         break;
                     case 5:
-                        // itemChildArr[5].textContent = "case 5 activated";
-                        console.log("case 5 activated, console.");
-                        console.log("%cSWITCH CASE 5", "background-color:dodgerblue; padding:10px");
                         break;
                     case 6:
-                        // debugger;
-                        itemChildArr[6].innerText = "Timestamp: " + x[i].timestamp;
-                        //this part gives an error: cannot find timestamp of undefined.
-                        // this is because x[6] doesn't exist - the array, x, goes up to 5 right now.
-                        console.log("%cSWITCH CASE 6", "background-color:dodgerblue; padding:10px");
-
+                        itemChild[j].nextSibling.childNodes[0].textContent = x[i]._id;
                         break;
                     case 7:
-                        console.log("%cSWITCH CASE 7", "background-color:dodgerblue; padding:10px");
                         break;
                     case 8:
-                        itemChildArr[8].innerText = "Database ID: " + x[i]._id;
-                        console.log("%cSWITCH CASE 8", "background-color:dodgerblue; padding:10px");
                         break;
-                    default:
-                        console.log("Default activated")
-                }
+                        //use switch case to implement following:
+                        /*
+                            templateDiv.childNodes[0].nextSibling.childNodes[0].textContent = "Hello World!";
+                            templateDiv.childNodes[2].nextSibling.childNodes[0].textContent = "Hello World!";
+                            templateDiv.childNodes[4].nextSibling.childNodes[0].textContent = "Hello World!";
+                            templateDiv.childNodes[6].nextSibling.childNodes[0].textContent = "Hello World!";
 
-                // itemChildArr[j].textContent = i;
-                // // console.log('Value of j: ' + j)
-                console.log("itemChildArr[j] = " + itemChildArr[j])
-                console.log("k value: " + k)
-                console.log("j value: " + j)
-                k++;
-                // debugger;
+                        */
+                }
             }
 
             // console.log("Item Children: " + itemChild.length)
             console.log("i value: " + i);
-            console.log("x value: " + x.length);
+            console.log("X VALUE: ");
+            console.log(x);
+            console.log("x length: " + x.length);
+            // itemChild[0].nextSibling.childNodes[0].textContent = "Hello World" //this works.
+
+            // console.log(itemChild[0].nextSibling.childNodes[0].textContent = "Hello World");
+            // console.log(itemChild[0].nextSibling.childNodes[0]);
+
+            // templateDiv.childNodes[0].nextSibling.childNodes[0].textContent = "FNAME TEXT!";
+            // templateDiv.childNodes[2].nextSibling.childNodes[0].textContent = "LNAME TEXT!";
+            // templateDiv.childNodes[4].nextSibling.childNodes[0].textContent = "TIMESTAMP!";
+            // templateDiv.childNodes[6].nextSibling.childNodes[0].textContent = "DATABASE ID!";
+
+            // console.log(templateDiv.childNodes[3].childNodes);
+            // templateDiv.childNodes[2].nextSibling.childNodes[0].textContent = "Hello World!"
+            // templateDiv.childNodes[3].nextSibling.childNodes[0].textContent = "Hello World!"
+            // console.log(templateDiv.childNodes[0].nextSibling.childNodes[0].textContent);
+            console.log(itemChild);
+            // console.log(itemChild);
+            // console.log(templateDiv.childNodes[1].childNodes[0])
+            // console.log(templateDiv)
             //append the new node wherever you like:
             document.body.appendChild(templateDiv);
             console.log("Card Appended")
-
         }
-
-        console.log("Cards created!")
-
+        console.log("Cards created!");
     }
     async function returnLatestIndex1Minute() {
         const response = await fetch('http://127.0.0.1:5500/latestindex1min');
